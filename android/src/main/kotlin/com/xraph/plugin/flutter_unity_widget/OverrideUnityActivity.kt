@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.WindowManager
 import com.unity3d.player.UnityPlayerActivity
 import java.util.Objects
+import java.lang.reflect.InvocationTargetException
+import java.lang.reflect.Method
 
 class OverrideUnityActivity : UnityPlayerActivity() {
     private lateinit var mMainActivityClass: Class<*>
@@ -13,6 +15,17 @@ class OverrideUnityActivity : UnityPlayerActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         instance = this
+
+        try {
+            val clearVRBootstrapClass: Class<*> = Class.forName("com.tiledmedia.clearvrcorewrapper.ClearVRBootstrap")
+            val bootstrapClearVRMethod: Method = clearVRBootstrapClass.getMethod("bootstrapClearVR")
+            bootstrapClearVRMethod.invoke(null)
+        } catch (argException: InvocationTargetException) {
+            throw RuntimeException(String.format("Cannot load ClearVR libraries. Error: %s", argException.getCause().toString()))
+        } catch (argException: Exception) {
+            throw RuntimeException(String.format("Cannot load ClearVR libraries. A generic error was thrown: %s", argException.toString()))
+        }
+
         this.window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         val intent = intent
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
