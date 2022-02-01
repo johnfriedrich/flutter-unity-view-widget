@@ -21,7 +21,7 @@ class OverrideUnityActivity : UnityPlayerActivity() {
             val bootstrapClearVRMethod: Method = clearVRBootstrapClass.getMethod("bootstrapClearVR")
             bootstrapClearVRMethod.invoke(null)
         } catch (argException: InvocationTargetException) {
-            throw RuntimeException(String.format("Cannot load ClearVR libraries. Error: %s", argException.getCause().toString()))
+            throw RuntimeException(String.format("Cannot load ClearVR libraries. Error: %s", argException.toString()))
         } catch (argException: Exception) {
             throw RuntimeException(String.format("Cannot load ClearVR libraries. A generic error was thrown: %s", argException.toString()))
         }
